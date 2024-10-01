@@ -41,7 +41,7 @@
             test -d .venv || ${pkgs.python311}/bin/python -m venv .venv
             export VIRTUAL_ENV="$(pwd)/.venv"
             export PATH="$VIRTUAL_ENV/bin:$PATH"
-            export PS1='$(printf "\033[01;34m(nix:nix-shell-env) \033[00m\033[01;32m[%s@%s:%s]$\033[00m " "\u" "\h" "\w")'
+            export PS1='$(printf "\033[01;34m(nix) \033[00m\033[01;32m[%s@%s:%s]$\033[00m " "\u" "\h" "\w")'
             ${reportOS}/bin/report-os
             echo "This is a Linux-specific message."
 
@@ -62,7 +62,7 @@
             test -d .venv || ${pkgs.python311}/bin/python -m venv .venv
             export VIRTUAL_ENV="$(pwd)/.venv"
             export PATH="$VIRTUAL_ENV/bin:$PATH"
-            export PS1='$(printf "\033[01;34m(nix:nix-shell-env) \033[00m\033[01;32m[%s@%s:%s]$\033[00m " "\u" "\h" "\w")'
+            export PS1='$(printf "\033[01;34m(nix) \033[00m\033[01;32m[%s@%s:%s]$\033[00m " "\u" "\h" "\w")'
             ${reportOS}/bin/report-os
             echo "This is a macOS-specific message."
 
