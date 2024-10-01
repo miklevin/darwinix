@@ -18,11 +18,10 @@
           python311
           python311.pkgs.pip
           python311.pkgs.virtualenv
-          cmake
-          git
-          zlib
           figlet
           tmux
+          zlib
+          git
         ] ++ (with pkgs; pkgs.lib.optionals isLinux [
           gcc
           stdenv.cc.cc.lib
@@ -32,6 +31,8 @@
           #!/usr/bin/env bash
           # Activate the virtual environment
           source .venv/bin/activate
+          # The following line is necessary for numpy to find its libraries
+          export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath commonPackages}:$LD_LIBRARY_PATH
 
           # Use the Proper case repo name in the figlet output
           REPO_NAME=$(basename "$PWD")
@@ -41,7 +42,8 @@
           
           # Install packages from requirements.txt
           echo "- Checking if numpy is importable..."
-          if pip install -r requirements.txt; then
+          if pip install --upgrade pip && \
+            pip install -r requirements.txt; then
               package_count=$(pip list --format=freeze | wc -l)
               echo "- Done. $package_count pip packages installed."
           else
