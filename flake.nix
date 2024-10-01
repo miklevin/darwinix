@@ -18,6 +18,7 @@
           python311
           python311.pkgs.pip
           python311.pkgs.virtualenv
+          cmake
           git
           zlib
           figlet
@@ -39,12 +40,17 @@
           figlet "$PROPER_REPO_NAME"
           
           # Install packages from requirements.txt
-          if pip install --upgrade pip --quiet && \
-            pip install -r requirements.txt --quiet; then
+          echo "- Checking if numpy is importable..."
+          if pip install -r requirements.txt; then
               package_count=$(pip list --format=freeze | wc -l)
               echo "- Done. $package_count pip packages installed."
           else
               echo "Warning: An error occurred during pip setup."
+          fi
+          if python -c "import numpy" 2>/dev/null; then
+            echo "- numpy is importable (good to go!)"
+          else
+            echo "Error: numpy could not be imported. Check your installation."
           fi
 
 
