@@ -1,5 +1,5 @@
 {
-  description = "A flake that explicitly reports the OS";
+  description = "A robust flake that reports the OS for both macOS and Linux";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -18,16 +18,27 @@
         # Determine OS string
         osString = if isMacOS then "macOS" else if isLinux then "Linux" else "Unknown OS";
         
-        # Set up conditional package selection
-        defaultShell = if isMacOS then pkgs.zsh else pkgs.bash;
-        
         # Script that reports the OS
         reportOS = pkgs.writeScriptBin "report-os" ''
-          #!${defaultShell}/bin/sh
-          echo "Current OS: ${osString}"
+          #!${pkgs.bash}/bin/bash
+          set -e
+
+          echo "Attempting to detect OS..."
+          
+          if [ "$(uname)" = "Darwin" ]; then
+            echo "Current OS: macOS (detected by uname)"
+          elif [ "$(uname)" = "Linux" ]; then
+            echo "Current OS: Linux (detected by uname)"
+          else
+            echo "Current OS: Unknown (uname reports: $(uname))"
+          fi
+          
           echo "Nix-detected system: ${system}"
           echo "isMacOS: ${toString isMacOS}"
           echo "isLinux: ${toString isLinux}"
+          echo "osString: ${osString}"
+          
+          echo "Script execution completed successfully."
         '';
 
         # Platform-specific packages
@@ -43,18 +54,18 @@
           default = reportOS;
         };
 
-        apps.default = {
-          type = "app";
-          program = "${self.packages.${system}.default}/bin/report-os";
+        apps.default = flake-utils.lib.mkApp {
+          drv = reportOS;
         };
         
         devShells.default = pkgs.mkShell {
           buildInputs = [
             reportOS
+            pkgs.bash  # Explicitly include bash
           ] ++ platformSpecificPackages;
           
           shellHook = ''
-            ${reportOS}/bin/report-os
+            ${reportOS}/bin/report-os || echo "Error: Failed to execute report-os script"
           '';
         };
       });
