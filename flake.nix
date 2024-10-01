@@ -12,7 +12,6 @@
         pkgs = nixpkgs.legacyPackages.${system};
         isDarwin = pkgs.stdenv.isDarwin;
         isLinux = pkgs.stdenv.isLinux;
-        osString = if isDarwin then "macOS" else if isLinux then "Linux" else "Unknown OS";
 
         # Define common packages used across all platforms
         commonPackages = with pkgs; [
@@ -21,22 +20,28 @@
           python311.pkgs.virtualenv
           cmake
           ninja
-          gcc
           git
           zlib
-          stdenv.cc.cc.lib
           figlet
           tmux
-        ];
+        ] ++ (with pkgs; pkgs.lib.optionals isLinux [
+          gcc
+          stdenv.cc.cc.lib
+        ]);
 
         reportOS = pkgs.writeShellScriptBin "report-os" ''
-          echo "Hello from ${osString}!"
+          echo "Hello from ${if isLinux then "Linux" else "macOS"}!"
           echo "Nix-detected system: ${system}"
         '';
 
         linuxDevShell = pkgs.mkShell {
           buildInputs = commonPackages ++ [ reportOS ];  # Added commonPackages
           shellHook = ''
+            # Create the Python virtual environment
+            test -d .venv || ${pkgs.python311.interpreter} -m venv .venv
+            export VIRTUAL_ENV="$(pwd)/.venv"
+            export PATH="$VIRTUAL_ENV/bin:$PATH"
+            export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath commonPackages}:$LD_LIBRARY_PATH"  # Ensure libraries are available
             export PS1='$(printf "\033[01;34m(nix:nix-shell-env) \033[00m\033[01;32m[%s@%s:%s]$\033[00m " "\u" "\h" "\w")'
             ${reportOS}/bin/report-os
             echo "This is a Linux-specific message."
