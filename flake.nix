@@ -32,6 +32,17 @@
           echo "Nix-detected system: ${system}"
         '';
 
+        runScript = pkgs.writeShellScriptBin "run-script" ''
+          #!/usr/bin/env bash
+          # Activate the virtual environment
+          source .venv/bin/activate
+
+          # Install packages from requirements.txt
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+        '';
+
         linuxDevShell = pkgs.mkShell {
           buildInputs = commonPackages;  # Added commonPackages
           shellHook = ''
@@ -42,14 +53,8 @@
             export PS1='$(printf "\033[01;34m(nix) \033[00m\033[01;32m[%s@%s:%s]$\033[00m " "\u" "\h" "\w")'
             ${reportOS}/bin/report-os
             echo "This is a Linux-specific message."
-
-            # Activate the virtual environment
-            source .venv/bin/activate
-
-            # Install packages from requirements.txt
-            if [ -f requirements.txt ]; then
-              pip install -r requirements.txt
-            fi
+            # Run the common runScript
+            ${runScript}/bin/run-script  # Ensure to call the script correctly
           '';
         };
 
@@ -63,14 +68,8 @@
             export PS1='$(printf "\033[01;34m(nix) \033[00m\033[01;32m[%s@%s:%s]$\033[00m " "\u" "\h" "\w")'
             ${reportOS}/bin/report-os
             echo "This is a macOS-specific message."
-
-            # Activate the virtual environment
-            source .venv/bin/activate
-
-            # Install packages from requirements.txt
-            if [ -f requirements.txt ]; then
-              pip install -r requirements.txt
-            fi
+            # Run the common runScript
+            ${runScript}/bin/run-script  # Ensure to call the script correctly
           '';
         };
 
