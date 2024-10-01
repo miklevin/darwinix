@@ -12,11 +12,11 @@
         pkgs = nixpkgs.legacyPackages.${system};
         
         # Detect OS
-        isMacOS = pkgs.stdenv.isDarwin;
+        isDarwin = pkgs.stdenv.isDarwin;
         isLinux = pkgs.stdenv.isLinux;
         
         # Determine OS string
-        osString = if isMacOS then "macOS" else if isLinux then "Linux" else "Unknown OS";
+        osString = if isDarwin then "macOS" else if isLinux then "Linux" else "Unknown OS";
         
         # Script that reports the OS
         reportOS = pkgs.writeScriptBin "report-os" ''
@@ -34,7 +34,7 @@
           fi
           
           echo "Nix-detected system: ${system}"
-          echo "isMacOS: ${toString isMacOS}"
+          echo "isDarwin: ${toString isDarwin}"
           echo "isLinux: ${toString isLinux}"
           echo "osString: ${osString}"
           
@@ -42,7 +42,7 @@
         '';
 
         # Platform-specific packages
-        platformSpecificPackages = if isMacOS then [
+        platformSpecificPackages = if isDarwin then [
           pkgs.darwin.apple_sdk.frameworks.CoreFoundation
         ] else if isLinux then [
           pkgs.libGL
