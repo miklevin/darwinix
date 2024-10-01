@@ -18,8 +18,6 @@
           python311
           python311.pkgs.pip
           python311.pkgs.virtualenv
-          cmake
-          ninja
           git
           zlib
           figlet
