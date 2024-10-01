@@ -14,7 +14,23 @@
         # Detect OS
         isDarwin = pkgs.stdenv.isDarwin;
         isLinux = pkgs.stdenv.isLinux;
-        
+
+        # Define common packages used across all platforms
+        commonPackages = with pkgs; [
+          python311
+          python311.pkgs.pip
+          python311.pkgs.virtualenv
+          cmake
+          ninja
+          git
+          zlib
+          figlet
+          tmux
+        ] ++ (with pkgs; pkgs.lib.optionals isLinux [
+          gcc
+          stdenv.cc.cc.lib
+        ]);
+
         # Determine OS string
         osString = if isDarwin then "macOS" else if isLinux then "Linux" else "Unknown OS";
         
@@ -62,7 +78,7 @@
           buildInputs = [
             reportOS
             pkgs.bash  # Explicitly include bash
-          ] ++ platformSpecificPackages;
+          ] ++ platformSpecificPackages ++ commonPackages;  # Include common packages
           
           shellHook = ''
             ${reportOS}/bin/report-os || echo "Error: Failed to execute report-os script"
