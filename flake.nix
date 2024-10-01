@@ -27,11 +27,6 @@
           stdenv.cc.cc.lib
         ]);
 
-        reportOS = pkgs.writeShellScriptBin "report-os" ''
-          echo "Hello from ${if isDarwin then "macOS" else "Linux"}!"
-          echo "Nix-detected system: ${system}"
-        '';
-
         runScript = pkgs.writeShellScriptBin "run-script" ''
           #!/usr/bin/env bash
           # Activate the virtual environment
@@ -63,8 +58,6 @@
             export VIRTUAL_ENV="$(pwd)/.venv"
             export PATH="$VIRTUAL_ENV/bin:$PATH"
             export PS1='$(printf "\033[01;34m(nix) \033[00m\033[01;32m[%s@%s:%s]$\033[00m " "\u" "\h" "\w")'
-            ${reportOS}/bin/report-os
-            echo "This is a Linux-specific message."
             # Run the common runScript
             ${runScript}/bin/run-script  # Ensure to call the script correctly
           '';
@@ -78,8 +71,6 @@
             export VIRTUAL_ENV="$(pwd)/.venv"
             export PATH="$VIRTUAL_ENV/bin:$PATH"
             export PS1='$(printf "\033[01;34m(nix) \033[00m\033[01;32m[%s@%s:%s]$\033[00m " "\u" "\h" "\w")'
-            ${reportOS}/bin/report-os
-            echo "This is a macOS-specific message."
             # Run the common runScript
             ${runScript}/bin/run-script  # Ensure to call the script correctly
           '';
