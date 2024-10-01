@@ -30,7 +30,7 @@
         ]);
 
         reportOS = pkgs.writeShellScriptBin "report-os" ''
-          echo "Hello from ${if isLinux then "Linux" else "macOS"}!"
+          echo "Hello from ${if isDarwin then "macOS" else "Linux"}!"
           echo "Nix-detected system: ${system}"
         '';
 
@@ -49,8 +49,12 @@
         };
 
         darwinDevShell = pkgs.mkShell {
-          buildInputs = commonPackages ++ [ reportOS ];  # Added commonPackages
+          buildInputs = commonPackages;  # Added commonPackages
           shellHook = ''
+            # Create the Python virtual environment
+            test -d .venv || ${pkgs.python311.interpreter} -m venv .venv
+            export VIRTUAL_ENV="$(pwd)/.venv"
+            export PATH="$VIRTUAL_ENV/bin:$PATH"
             export PS1='$(printf "\033[01;34m(nix:nix-shell-env) \033[00m\033[01;32m[%s@%s:%s]$\033[00m " "\u" "\h" "\w")'
             ${reportOS}/bin/report-os
             echo "This is a macOS-specific message."
@@ -58,6 +62,6 @@
         };
 
       in {
-        devShell = if isLinux then linuxDevShell else darwinDevShell;
+        devShell = if isDarwin then darwinDevShell else linuxDevShell;  # Ensure multi-OS support
       });
 }
