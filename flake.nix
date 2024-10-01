@@ -35,16 +35,23 @@
         '';
 
         linuxDevShell = pkgs.mkShell {
-          buildInputs = commonPackages ++ [ reportOS ];  # Added commonPackages
+          buildInputs = commonPackages;  # Added commonPackages
           shellHook = ''
             # Create the Python virtual environment
-            test -d .venv || ${pkgs.python311.interpreter} -m venv .venv
+            test -d .venv || ${pkgs.python311}/bin/python -m venv .venv
             export VIRTUAL_ENV="$(pwd)/.venv"
             export PATH="$VIRTUAL_ENV/bin:$PATH"
-            export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath commonPackages}:$LD_LIBRARY_PATH"  # Ensure libraries are available
             export PS1='$(printf "\033[01;34m(nix:nix-shell-env) \033[00m\033[01;32m[%s@%s:%s]$\033[00m " "\u" "\h" "\w")'
             ${reportOS}/bin/report-os
             echo "This is a Linux-specific message."
+
+            # Activate the virtual environment
+            source .venv/bin/activate
+
+            # Install packages from requirements.txt
+            if [ -f requirements.txt ]; then
+              pip install -r requirements.txt
+            fi
           '';
         };
 
@@ -52,16 +59,24 @@
           buildInputs = commonPackages;  # Added commonPackages
           shellHook = ''
             # Create the Python virtual environment
-            test -d .venv || ${pkgs.python311.interpreter} -m venv .venv
+            test -d .venv || ${pkgs.python311}/bin/python -m venv .venv
             export VIRTUAL_ENV="$(pwd)/.venv"
             export PATH="$VIRTUAL_ENV/bin:$PATH"
             export PS1='$(printf "\033[01;34m(nix:nix-shell-env) \033[00m\033[01;32m[%s@%s:%s]$\033[00m " "\u" "\h" "\w")'
             ${reportOS}/bin/report-os
             echo "This is a macOS-specific message."
+
+            # Activate the virtual environment
+            source .venv/bin/activate
+
+            # Install packages from requirements.txt
+            if [ -f requirements.txt ]; then
+              pip install -r requirements.txt
+            fi
           '';
         };
 
       in {
-        devShell = if isDarwin then darwinDevShell else linuxDevShell;  # Ensure multi-OS support
+        devShell = if isLinux then linuxDevShell else darwinDevShell;  # Ensure multi-OS support
       });
 }
