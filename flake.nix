@@ -54,6 +54,7 @@
           else
             echo "Error: numpy could not be imported. Check your installation."
           fi
+          jupyter lab
         '';
 
         linuxDevShell = pkgs.mkShell {
