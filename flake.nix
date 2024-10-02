@@ -1,7 +1,15 @@
-# Welcome to the world of Nix Flakes! 
-# This file defines a complete, reproducible development environment.
-# It's like a recipe for your perfect workspace, ensuring everyone
-# on your team has the exact same setup, every time.
+#  ____                      _       _      
+# |  _ \  __ _ _ ____      _(_)_ __ (_)_  __
+# | | | |/ _` | '__\ \ /\ / / | '_ \| \ \/ /
+# | |_| | (_| | |   \ V  V /| | | | | |>  < 
+# |____/ \__,_|_|    \_/\_/ |_|_| |_|_/_/\_\
+
+# Most modern development is done on Linux, but Macs are Unix. If you think
+# Homebrew and Docker are the solution, you're wrong. Welcome to the world of
+# Nix Flakes! This file defines a complete, reproducible development environment.
+# It's like a recipe for your perfect workspace, ensuring everyone on your team
+# has the exact same setup, every time. As a bonus, you can use Nix flakes on 
+# Windows under WSL, and whatever you make will be deployable to the cloud.
 
 {
   # This description helps others understand the purpose of this Flake
