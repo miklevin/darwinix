@@ -1,0 +1,10 @@
+*.json
+*.log.*
+*.log
+.DS_Store
+.env
+.ipynb_checkpoints/
+.sesskey
+.venv/
+.vscode/
+__pycache__/
