@@ -64,9 +64,14 @@
           fi
           if python -c "import numpy" 2>/dev/null; then
             echo "- numpy is importable (good to go!)"
+            echo
+            echo "To start JupyterLab, type: start"
+            echo "To stop JupyterLab, type: stop"
+            echo
           else
             echo "Error: numpy could not be imported. Check your installation."
           fi
+          echo "To exit this environment, type: exit"
 
           # Create the start script
           cat << EOF > .venv/bin/start
