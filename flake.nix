@@ -52,6 +52,28 @@
           else
             echo "Error: numpy could not be imported. Check your installation."
           fi
+
+          # Create the start script
+          cat << EOF > .venv/bin/start
+          #!/bin/sh
+          stop
+          echo "Starting JupyterLab..."
+          tmux new-session -d -s jupyter 'source .venv/bin/activate && jupyter lab'
+          echo "JupyterLab started."
+          echo "To view JupyterLab server: tmux attach -t jupyter"
+          echo "To stop JupyterLab server: stop"
+          EOF
+          chmod +x .venv/bin/start
+
+          # Create the stop script
+          cat << EOF > .venv/bin/stop
+          #!/bin/sh
+          echo "Stopping tmuxs..."
+          tmux kill-server 2>/dev/null || echo "No tmux session is running."
+          echo "All tmux sessions have been stopped."
+          EOF
+          chmod +x .venv/bin/stop
+
         '';
 
         linuxDevShell = pkgs.mkShell {
