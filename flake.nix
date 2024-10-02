@@ -72,9 +72,9 @@
           cat << EOF > .venv/bin/start
           #!/bin/sh
           stop
-          echo "Starting JupyterLab..."
-          tmux new-session -d -s jupyter 'source .venv/bin/activate && jupyter lab'
-          echo "JupyterLab started."
+          echo "Starting JupyterLab. A tab will open in your browser."
+          tmux new-session -d -s jupyter 'source .venv/bin/activate && jupyter lab --NotebookApp.token="" --NotebookApp.password="" --NotebookApp.disable_check_xsrf=True'
+          echo "JupyterLab started. If no tab opens, visit http://localhost:8888"
           echo "To view JupyterLab server: tmux attach -t jupyter"
           echo "To stop JupyterLab server: stop"
           EOF
