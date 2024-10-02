@@ -1,32 +1,47 @@
+# Welcome to the world of Nix Flakes! 
+# This file defines a complete, reproducible development environment.
+# It's like a recipe for your perfect workspace, ensuring everyone
+# on your team has the exact same setup, every time.
+
 {
+  # This description helps others understand the purpose of this Flake
   description = "A flake that reports the OS using separate scripts with optional CUDA support and unfree packages allowed.";
 
+  # Inputs are the dependencies for our Flake
+  # They're pinned to specific versions to ensure reproducibility
   inputs = {
+    # nixpkgs is the main repository of Nix packages
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # flake-utils provides helpful functions for working with Flakes
     flake-utils.url = "github:numtide/flake-utils";
   };
 
+  # Outputs define what our Flake produces
+  # In this case, it's a development shell that works across different systems
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        # Import nixpkgs with allowUnfree enabled
+        # We're creating a custom instance of nixpkgs
+        # This allows us to enable unfree packages like CUDA
         pkgs = import nixpkgs {
-          system = system;
+          inherit system;
           config = {
-            allowUnfree = true;  # Allow unfree packages like CUDA
+            allowUnfree = true;  # This is necessary for CUDA support
           };
         };
 
+        # These helpers let us adjust our setup based on the OS
         isDarwin = pkgs.stdenv.isDarwin;
         isLinux = pkgs.stdenv.isLinux;
 
-        # Define common packages used across all platforms
+        # Common packages that we want available in our environment
+        # regardless of the operating system
         commonPackages = with pkgs; [
           python311
           python311.pkgs.pip
           python311.pkgs.virtualenv
-          figlet
-          tmux
+          figlet  # For creating ASCII art welcome messages
+          tmux    # Terminal multiplexer for managing sessions
           zlib
           git
         ] ++ (with pkgs; pkgs.lib.optionals isLinux [
@@ -34,26 +49,29 @@
           stdenv.cc.cc.lib
         ]);
 
-        # Define optional CUDA packages for Linux
+        # CUDA packages for GPU support on Linux systems with NVIDIA hardware
         cudaPackages = with pkgs; [
           cudatoolkit
           cudnn
           nccl
         ];
 
-        # Create a common shell script to run on both Linux and macOS
+        # This script sets up our Python environment and project
         runScript = pkgs.writeShellScriptBin "run-script" ''
           #!/usr/bin/env bash
           # Activate the virtual environment
           source .venv/bin/activate
 
-          # Use the Proper case repo name in the figlet output
+          # Create a fancy welcome message
           REPO_NAME=$(basename "$PWD")
           PROPER_REPO_NAME=$(echo "$REPO_NAME" | awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}')
           figlet "$PROPER_REPO_NAME"
           echo "Welcome to the $PROPER_REPO_NAME development environment on ${system}!"
           echo 
-          # Install packages from requirements.txt
+
+          # Install Python packages from requirements.txt
+          # This allows flexibility to use the latest PyPI packages
+          # Note: This makes the environment less deterministic
           echo "- Installing pip packages..."
           if pip install --upgrade pip --quiet && \
             pip install -r requirements.txt --quiet; then
@@ -62,6 +80,8 @@
           else
               echo "Warning: An error occurred during pip setup."
           fi
+
+          # Check if numpy is properly installed
           if python -c "import numpy" 2>/dev/null; then
             echo "- numpy is importable (good to go!)"
             echo
@@ -71,9 +91,9 @@
           else
             echo "Error: numpy could not be imported. Check your installation."
           fi
-          echo "To exit this environment, type: exit"
 
-          # Create the start script
+          # Create convenience scripts for managing JupyterLab
+          # Note: We've disabled token and password for easier access, especially in WSL environments
           cat << EOF > .venv/bin/start
           #!/bin/sh
           stop
@@ -85,7 +105,6 @@
           EOF
           chmod +x .venv/bin/start
 
-          # Create the stop script
           cat << EOF > .venv/bin/stop
           #!/bin/sh
           echo "Stopping tmuxs..."
@@ -93,20 +112,22 @@
           echo "All tmux sessions have been stopped."
           EOF
           chmod +x .venv/bin/stop
-
         '';
 
+        # Define the development shell for Linux systems (including WSL)
         linuxDevShell = pkgs.mkShell {
-          buildInputs = commonPackages ++ (with pkgs; pkgs.lib.optionals (builtins.pathExists "/usr/bin/nvidia-smi") cudaPackages);  # Add CUDA packages if nvidia-smi exists
+          # Include common packages and conditionally add CUDA if available
+          buildInputs = commonPackages ++ (with pkgs; pkgs.lib.optionals (builtins.pathExists "/usr/bin/nvidia-smi") cudaPackages);
           shellHook = ''
-            # Create the Python virtual environment
+            # Set up the Python virtual environment
             test -d .venv || ${pkgs.python311}/bin/python -m venv .venv
             export VIRTUAL_ENV="$(pwd)/.venv"
             export PATH="$VIRTUAL_ENV/bin:$PATH"
+            # Customize the prompt to show we're in a Nix environment
             export PS1='$(printf "\033[01;34m(nix) \033[00m\033[01;32m[%s@%s:%s]$\033[00m " "\u" "\h" "\w")'
             export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath commonPackages}:$LD_LIBRARY_PATH
 
-            # Optional CUDA support
+            # Set up CUDA if available
             if command -v nvidia-smi &> /dev/null; then
               echo "CUDA hardware detected."
               export CUDA_HOME=${pkgs.cudatoolkit}
@@ -116,27 +137,30 @@
               echo "No CUDA hardware detected."
             fi
 
-            # Run the common runScript
-            ${runScript}/bin/run-script  # Ensure to call the script correctly
+            # Run our setup script
+            ${runScript}/bin/run-script
           '';
         };
 
+        # Define the development shell for macOS systems
         darwinDevShell = pkgs.mkShell {
-          buildInputs = commonPackages;  # Added commonPackages for macOS
+          buildInputs = commonPackages;
           shellHook = ''
-            # Create the Python virtual environment
+            # Set up the Python virtual environment
             test -d .venv || ${pkgs.python311}/bin/python -m venv .venv
             export VIRTUAL_ENV="$(pwd)/.venv"
             export PATH="$VIRTUAL_ENV/bin:$PATH"
+            # Customize the prompt to show we're in a Nix environment
             export PS1='$(printf "\033[01;34m(nix) \033[00m\033[01;32m[%s@%s:%s]$\033[00m " "\u" "\h" "\w")'
             export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath commonPackages}:$LD_LIBRARY_PATH
 
-            # Run the common runScript
-            ${runScript}/bin/run-script  # Ensure to call the script correctly
+            # Run our setup script
+            ${runScript}/bin/run-script
           '';
         };
 
       in {
+        # Choose the appropriate development shell based on the OS
         devShell = if isLinux then linuxDevShell else darwinDevShell;  # Ensure multi-OS support
       });
 }
