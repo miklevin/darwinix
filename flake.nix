@@ -96,10 +96,10 @@
           # Note: We've disabled token and password for easier access, especially in WSL environments
           cat << EOF > .venv/bin/start
           #!/bin/sh
-          stop
-          echo "Starting JupyterLab. A tab will open in your browser."
+          echo "A JupyterLab tab will open in your default browser."
+          tmux kill-session -t jupyter 2>/dev/null || echo "No tmux session named 'jupyter' is running."
           tmux new-session -d -s jupyter 'source .venv/bin/activate && jupyter lab --NotebookApp.token="" --NotebookApp.password="" --NotebookApp.disable_check_xsrf=True'
-          echo "JupyterLab started. If no tab opens, visit http://localhost:8888"
+          echo "If no tab opens, visit http://localhost:8888"
           echo "To view JupyterLab server: tmux attach -t jupyter"
           echo "To stop JupyterLab server: stop"
           EOF
@@ -107,9 +107,9 @@
 
           cat << EOF > .venv/bin/stop
           #!/bin/sh
-          echo "Stopping tmuxs..."
-          tmux kill-server 2>/dev/null || echo "No tmux session is running."
-          echo "All tmux sessions have been stopped."
+          echo "Stopping tmux session 'jupyter'..."
+          tmux kill-session -t jupyter 2>/dev/null || echo "No tmux session named 'jupyter' is running."
+          echo "The tmux session 'jupyter' has been stopped."
           EOF
           chmod +x .venv/bin/stop
         '';
