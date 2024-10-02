@@ -1,5 +1,5 @@
 {
-  description = "A flake that reports the OS using separate scripts";
+  description = "A flake that reports the OS using separate scripts with optional CUDA support and unfree packages allowed.";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -9,7 +9,14 @@
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
+        # Import nixpkgs with allowUnfree enabled
+        pkgs = import nixpkgs {
+          system = system;
+          config = {
+            allowUnfree = true;  # Allow unfree packages like CUDA
+          };
+        };
+
         isDarwin = pkgs.stdenv.isDarwin;
         isLinux = pkgs.stdenv.isLinux;
 
@@ -27,6 +34,14 @@
           stdenv.cc.cc.lib
         ]);
 
+        # Define optional CUDA packages for Linux
+        cudaPackages = with pkgs; [
+          cudatoolkit
+          cudnn
+          nccl
+        ];
+
+        # Create a common shell script to run on both Linux and macOS
         runScript = pkgs.writeShellScriptBin "run-script" ''
           #!/usr/bin/env bash
           # Activate the virtual environment
@@ -77,7 +92,7 @@
         '';
 
         linuxDevShell = pkgs.mkShell {
-          buildInputs = commonPackages;  # Added commonPackages
+          buildInputs = commonPackages ++ (with pkgs; pkgs.lib.optionals (builtins.pathExists "/usr/bin/nvidia-smi") cudaPackages);  # Add CUDA packages if nvidia-smi exists
           shellHook = ''
             # Create the Python virtual environment
             test -d .venv || ${pkgs.python311}/bin/python -m venv .venv
@@ -85,13 +100,24 @@
             export PATH="$VIRTUAL_ENV/bin:$PATH"
             export PS1='$(printf "\033[01;34m(nix) \033[00m\033[01;32m[%s@%s:%s]$\033[00m " "\u" "\h" "\w")'
             export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath commonPackages}:$LD_LIBRARY_PATH
+
+            # Optional CUDA support
+            if command -v nvidia-smi &> /dev/null; then
+              echo "CUDA hardware detected."
+              export CUDA_HOME=${pkgs.cudatoolkit}
+              export PATH=$CUDA_HOME/bin:$PATH
+              export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+            else
+              echo "No CUDA hardware detected."
+            fi
+
             # Run the common runScript
             ${runScript}/bin/run-script  # Ensure to call the script correctly
           '';
         };
 
         darwinDevShell = pkgs.mkShell {
-          buildInputs = commonPackages;  # Added commonPackages
+          buildInputs = commonPackages;  # Added commonPackages for macOS
           shellHook = ''
             # Create the Python virtual environment
             test -d .venv || ${pkgs.python311}/bin/python -m venv .venv
@@ -99,6 +125,7 @@
             export PATH="$VIRTUAL_ENV/bin:$PATH"
             export PS1='$(printf "\033[01;34m(nix) \033[00m\033[01;32m[%s@%s:%s]$\033[00m " "\u" "\h" "\w")'
             export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath commonPackages}:$LD_LIBRARY_PATH
+
             # Run the common runScript
             ${runScript}/bin/run-script  # Ensure to call the script correctly
           '';
