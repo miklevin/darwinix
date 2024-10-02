@@ -31,8 +31,6 @@
           #!/usr/bin/env bash
           # Activate the virtual environment
           source .venv/bin/activate
-          # The following line is necessary for numpy to find its libraries
-          export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath commonPackages}:$LD_LIBRARY_PATH
 
           # Use the Proper case repo name in the figlet output
           REPO_NAME=$(basename "$PWD")
@@ -54,7 +52,6 @@
           else
             echo "Error: numpy could not be imported. Check your installation."
           fi
-          jupyter lab
         '';
 
         linuxDevShell = pkgs.mkShell {
@@ -65,6 +62,7 @@
             export VIRTUAL_ENV="$(pwd)/.venv"
             export PATH="$VIRTUAL_ENV/bin:$PATH"
             export PS1='$(printf "\033[01;34m(nix) \033[00m\033[01;32m[%s@%s:%s]$\033[00m " "\u" "\h" "\w")'
+            export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath commonPackages}:$LD_LIBRARY_PATH
             # Run the common runScript
             ${runScript}/bin/run-script  # Ensure to call the script correctly
           '';
@@ -78,6 +76,7 @@
             export VIRTUAL_ENV="$(pwd)/.venv"
             export PATH="$VIRTUAL_ENV/bin:$PATH"
             export PS1='$(printf "\033[01;34m(nix) \033[00m\033[01;32m[%s@%s:%s]$\033[00m " "\u" "\h" "\w")'
+            export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath commonPackages}:$LD_LIBRARY_PATH
             # Run the common runScript
             ${runScript}/bin/run-script  # Ensure to call the script correctly
           '';
