@@ -6,12 +6,11 @@
 #                                                    `._,._,'  /'\_   _/`\  |     |     |
 #      Solving the "Not on my machine" problem well.           \___)=(___/  |_____|_____|
 
-# Most modern development is done on Linux, but Macs are Unix. If you think
-# Homebrew and Docker are the solution, you're wrong. Welcome to the world of
-# Nix Flakes! This file defines a complete, reproducible development environment.
-# It's like a recipe for your perfect workspace, ensuring everyone on your team
-# has the exact same setup, every time. As a bonus, you can use Nix flakes on 
-# Windows under WSL, and whatever you make will be deployable to the cloud.
+# Most modern development is done on Linux, but Macs are Unix. If you think Homebrew and Docker
+# are the solution, you're wrong. Welcome to the world of Nix Flakes! This file defines a complete,
+# reproducible development environment. It's like a recipe for your perfect workspace, ensuring
+# everyone on your team has the exact same setup, every time. As a bonus, you can use Nix flakes on
+# Windows under WSL. Plus, whatever you make will be deployable to the cloud.
 
 {
   # This description helps others understand the purpose of this Flake
