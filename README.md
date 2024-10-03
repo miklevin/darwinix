@@ -5,7 +5,7 @@
      | |_| | (_| | |   \ V  V /| | | | | |>  <   |          |  //   \ \   |_____|_____|
      |____/ \__,_|_|    \_/\_/ |_|_| |_|_/_/\_\   \        /  (|     | )  |     |     |
                                                    `._,._,'  /'\_   _/`\  |     |     |
-                                                             \___)=(___/  |_____|_____|
+     Solving the "Not on my machine" problem well.           \___)=(___/  |_____|_____|
 
 # Nix Flake for Cross-Platform Development Environment
 
