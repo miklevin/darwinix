@@ -46,7 +46,7 @@ challenges:
 - Reduces configuration drift over time
 - Automates setup of complex tools like CUDA
 
-## Usage
+## Usage (Brief)
 
 1. Install Nix with flakes enabled
 2. Clone this repository
@@ -55,6 +55,52 @@ challenges:
 This setup replaces the need for manual environment configuration, Dockerfiles,
 or OS-specific scripts, providing a unified solution for development environment
 management.
+
+## How to Use (Detailed)
+
+### Step 1: Install Nix
+
+To get started, you need to install Nix on your system. We recommend using the
+Determinate Nix Installer, which provides a robust and easily reversible
+installation process. Run the following command in your terminal (works for
+Linux, macOS, and Windows WSL):
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+```
+
+This command only needs to be run once to "nix-ify" your system. The Determinate
+Nix Installer offers advantages such as better error handling, a clean uninstall
+process, and support for a wide range of systems.
+
+### Step 2: Get This Repository
+
+There are two ways to get this repository:
+
+1. Clone the repository (preferred method for easy updates):
+   ```bash
+   git clone https://github.com/miklevin/darwinix.git
+   cd darwinix
+   ```
+
+2. Download and extract the ZIP file:
+   - Download the ZIP file from the GitHub repository
+   - Extract it to your desired location
+   - Open a terminal and navigate to the extracted directory
+
+### Step 3: Enter the Nix Environment
+
+Once you're in the repository directory, enter the Nix environment by running:
+
+```bash
+nix develop
+```
+
+This command will set up the development environment as defined in the flake.nix
+file, ensuring you have all the necessary tools and dependencies available.
+
+Now you're ready to start working in your Nix-managed, cross-platform
+development environment!
 
 ## Understanding the Nix Flake
 
@@ -111,3 +157,5 @@ to traditional system management methods. While it may not have the hype of
 newer technologies, Nix's long-standing presence and growing community support
 testify to its effectiveness in creating truly reproducible and maintainable
 development environments across various platforms.
+
+
