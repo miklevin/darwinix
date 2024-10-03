@@ -102,6 +102,65 @@ file, ensuring you have all the necessary tools and dependencies available.
 Now you're ready to start working in your Nix-managed, cross-platform
 development environment!
 
+## After Entering the Nix Environment
+
+Once you have successfully run `nix develop` and activated the development
+environment defined in `flake.nix`, you can start using JupyterLab with ease.
+Here’s what to do next:
+
+### Starting JupyterLab
+
+To launch JupyterLab, simply run the following command in your terminal:
+
+```bash
+start
+```
+
+This command will initiate a new tmux session named `jupyter`, where JupyterLab
+will run. If everything is set up correctly, a new tab should automatically open
+in your default web browser, directing you to the JupyterLab interface at
+`http://localhost:8888`. If the tab does not open automatically, you can
+manually navigate to that URL.
+
+### Stopping JupyterLab
+
+When you are done working with JupyterLab and want to stop the server, you can
+do so by running:
+
+```bash
+stop
+```
+
+This command will terminate the tmux session running JupyterLab, effectively
+stopping the server.
+
+### Monitoring JupyterLab in tmux
+
+If you wish to monitor the Jupyter server running in the background, you can
+attach to the tmux session by executing:
+
+```bash
+tmux attach -t jupyter
+```
+
+This will allow you to see the output and logs from the JupyterLab server
+directly in your terminal. You can interact with the session as needed, making
+it easier to troubleshoot any issues or observe the server's behavior in
+real-time.
+
+### Understanding tmux
+
+For those unfamiliar, tmux is a terminal multiplexer that allows you to manage
+multiple terminal sessions from a single window. It enables you to run processes
+in the background while still being able to access them later. This is
+particularly useful during development, as it allows you to keep your JupyterLab
+server running while you work on other tasks in your terminal. You can detach
+from the session at any time by pressing `Ctrl + b`, followed by `d`, and
+reattach later using the command mentioned above.
+
+With these commands, you can efficiently manage your JupyterLab environment and
+maintain visibility into your development processes.
+
 ## Understanding the Nix Flake
 
 You can view the complete Nix flake configuration at
