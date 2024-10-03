@@ -55,7 +55,6 @@
           git                        # Version control system for tracking changes
           curl                       # Command-line tool for transferring data with URLs
           wget                       # Utility for non-interactive download of files from the web
-          make                       # Build automation tool for managing dependencies
           cmake                      # Cross-platform build system generator
           htop                       # Interactive process viewer for Unix systems
         ] ++ (with pkgs; pkgs.lib.optionals isLinux [
