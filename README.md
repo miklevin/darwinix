@@ -72,3 +72,25 @@ This multi-OS approach, including Windows support via WSL, demonstrates the
 power of **Nix flakes** in creating truly cross-platform development environments.
 By examining the flake, you can appreciate how it handles different operating
 systems while maintaining a consistent core setup.
+
+## Development Flexibility
+
+This Nix flake is not intended to be the definitive configuration for your
+projects; rather, it serves as a foundational starting point for a
+Python-centric data science platform. It includes all the necessary C-related
+dependencies for building pip packages that may not have pre-built wheels and
+can still be compiled from source. 
+
+### Like a Server, But Better
+
+Additionally, this setup provides enough infrastructure to run background
+processes, such as web servers, in a way that mimics service behavior without
+actually running them as systemd services. This approach allows you to monitor
+and debug these processes directly in tmux terminals, which is particularly
+useful during development. Unlike traditional service management, where
+processes are detached and managed by systemd, this method enables you to log in
+and interact with the running processes, making it easier to troubleshoot issues
+and observe their behavior in real-time. This flexibility is crucial for
+developers who need to iterate quickly and maintain visibility into their
+applications while they are being built and tested.
+
