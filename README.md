@@ -14,7 +14,7 @@ be *star-nix* for Unix/Linux-like OSes? Or would that be *nix* for the NixOS pac
 manager that makes this IaC stuff so effective? Yes! It's **Infrastructure as Code**
 provided by the Docker-killing dark horse of the Web, the package manager, *nix*!
 
-## It Works on My Machine (be it Mac, Windows or Linux)
+## It Works on My Machine (be it Mac, Linux or even Windows)
 
 Most modern development is done on Linux, but Macs are Unix. If you think
 Homebrew and Docker are the solution, you're wrong. Welcome to the world of **Nix
