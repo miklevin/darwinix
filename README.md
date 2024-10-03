@@ -55,21 +55,6 @@ This setup replaces the need for manual environment configuration, Dockerfiles,
 or OS-specific scripts, providing a unified solution for development environment
 management.
 
-```mermaid
-graph TD;
-    A[Start] --> B[Install Nix];
-    B --> C[Clone Repository];
-    C --> D[Run `nix develop`];
-    D --> E[Enter Nix Environment];
-    E --> F[Start JupyterLab];
-    F --> G[Open in Browser];
-    E --> H[Monitor JupyterLab in tmux];
-    H --> I[Attach to tmux Session];
-    F --> J[Stop JupyterLab];
-    J --> K[Terminate tmux Session];
-    K --> L[End];
-```
-
 ## How to Use (Detailed)
 
 ### Step 1: Install Nix
@@ -161,6 +146,21 @@ This will allow you to see the output and logs from the JupyterLab server
 directly in your terminal. You can interact with the session as needed, making
 it easier to troubleshoot any issues or observe the server's behavior in
 real-time.
+
+```mermaid
+graph TD;
+    A[Start] --> B[Install Nix];
+    B --> C[Clone Repository];
+    C --> D[Run nix develop];
+    D --> E[Enter Nix Environment];
+    E --> F[Start JupyterLab];
+    F --> G[Open in Browser];
+    E --> H[Monitor JupyterLab in tmux];
+    H --> I[Attach to tmux Session];
+    F --> J[Stop JupyterLab];
+    J --> K[Terminate tmux Session];
+    K --> L[End];
+```
 
 ### Understanding tmux
 
