@@ -79,7 +79,8 @@ This Nix flake is not intended to be the definitive configuration for your
 projects; rather, it serves as a foundational starting point for a
 Python-centric data science platform. It includes all the necessary C-related
 dependencies for building pip packages that may not have pre-built wheels and
-can still be compiled from source. 
+can still be compiled from source. Plus, if you've got the accelerated Nvidia
+GPU CUDA capable hardware, it uses it.
 
 ### Like a Server, But Better
 
