@@ -1,4 +1,3 @@
-
       ____                      _       _                        .--.      ___________
      |  _ \  __ _ _ ____      _(_)_ __ (_)_  __    ,--./,-.     |o_o |    |     |     |
      | | | |/ _` | '__\ \ /\ / / | '_ \| \ \/ /   / #      \    |:_/ |    |     |     |
@@ -96,7 +95,7 @@ Once you're in the repository directory, enter the Nix environment by running:
 nix develop
 ```
 
-This command will set up the development environment as defined in the flake.nix
+This command will set up the development environment as defined in the `flake.nix`
 file, ensuring you have all the necessary tools and dependencies available.
 
 Now you're ready to start working in your Nix-managed, cross-platform
@@ -216,5 +215,3 @@ to traditional system management methods. While it may not have the hype of
 newer technologies, Nix's long-standing presence and growing community support
 testify to its effectiveness in creating truly reproducible and maintainable
 development environments across various platforms.
-
-
