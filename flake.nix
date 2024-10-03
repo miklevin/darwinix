@@ -46,24 +46,22 @@
         # Common packages that we want available in our environment
         # regardless of the operating system
         commonPackages = with pkgs; [
-          python311
-          python311.pkgs.pip
-          python311.pkgs.virtualenv
-          figlet  # For creating ASCII art welcome messages
-          tmux    # Terminal multiplexer for managing sessions
-          zlib
-          git
+          python311                  # Python 3.11 interpreter
+          python311.pkgs.pip         # Package installer for Python
+          python311.pkgs.virtualenv  # Tool to create isolated Python environments
+          figlet                     # For creating ASCII art welcome messages
+          tmux                       # Terminal multiplexer for managing sessions
+          zlib                       # Compression library for data compression
+          git                        # Version control system for tracking changes
+          curl                       # Command-line tool for transferring data with URLs
+          wget                       # Utility for non-interactive download of files from the web
+          make                       # Build automation tool for managing dependencies
+          cmake                      # Cross-platform build system generator
+          htop                       # Interactive process viewer for Unix systems
         ] ++ (with pkgs; pkgs.lib.optionals isLinux [
-          gcc
-          stdenv.cc.cc.lib
+          gcc                        # GNU Compiler Collection for compiling C/C++ code
+          stdenv.cc.cc.lib           # Standard C library for Linux systems
         ]);
-
-        # CUDA packages for GPU support on Linux systems with NVIDIA hardware
-        cudaPackages = with pkgs; [
-          cudatoolkit
-          cudnn
-          nccl
-        ];
 
         # This script sets up our Python environment and project
         runScript = pkgs.writeShellScriptBin "run-script" ''
