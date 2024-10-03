@@ -53,3 +53,20 @@ challenges:
 This setup replaces the need for manual environment configuration, Dockerfiles,
 or OS-specific scripts, providing a unified solution for development environment
 management.
+
+## Understanding the Nix Flake
+
+You can view the complete Nix flake configuration at
+[https://github.com/miklevin/darwinix/blob/main/flake.nix](https://github.com/miklevin/darwinix/blob/main/flake.nix).
+Here's a brief guide to understanding its structure:
+
+- `commonPackages`: Defines software packages installed on both macOS and Linux hosts.
+- `linuxDevShell`: Specifies the development environment for Linux systems.
+- `darwinDevShell`: Defines the environment for macOS systems.
+- `runScript`: A common script executed at the end of both Linux and macOS
+  setups, establishing a Python-based Jupyter Notebooks data science environment.
+
+This multi-OS approach, including Windows support via WSL, demonstrates the
+power of Nix flakes in creating truly cross-platform development environments.
+By examining the flake, you can appreciate how it handles different operating
+systems while maintaining a consistent core setup.
