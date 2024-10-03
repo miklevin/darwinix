@@ -1,4 +1,3 @@
-
       ____                      _       _      
      |  _ \  __ _ _ ____      _(_)_ __ (_)_  __
      | | | |/ _` | '__\ \ /\ / / | '_ \| \ \/ /
@@ -7,16 +6,16 @@
 
 # Nix Flake for Cross-Platform Development Environment
 
-Darwinix, for the win! Or would that be Darwin for the Apple Unix? Or would that
-be star-nix for Unix/Linux-like OSes? Or would that be nix for the NixOS package
-manager that makes this IaC stuff so effective? Yes! It's Infrastructure as Code
-provided by the Docker-killing dark horse of the Web, the package manager, nix!
+**Darwinix**, for the win! Or would that be *Darwin* for the Apple Unix? Or would that
+be *star-nix* for Unix/Linux-like OSes? Or would that be *nix* for the NixOS package
+manager that makes this IaC stuff so effective? Yes! It's **Infrastructure as Code**
+provided by the Docker-killing dark horse of the Web, the package manager, *nix*!
 
 ## It Works on My Machine (be it Mac, Windows or Linux)
 
 Most modern development is done on Linux, but Macs are Unix. If you think
-Homebrew and Docker are the solution, you're wrong. Welcome to the world of Nix
-Flakes! This file defines a complete, reproducible development environment. It's
+Homebrew and Docker are the solution, you're wrong. Welcome to the world of **Nix
+Flakes**! This file defines a complete, reproducible development environment. It's
 like a recipe for your perfect workspace, ensuring everyone on your team has the
 exact same setup, every time. As a bonus, you can use Nix flakes on Windows
 under WSL, and whatever you make will be deployable to the cloud.
@@ -67,6 +66,6 @@ Here's a brief guide to understanding its structure:
   setups, establishing a Python-based Jupyter Notebooks data science environment.
 
 This multi-OS approach, including Windows support via WSL, demonstrates the
-power of Nix flakes in creating truly cross-platform development environments.
+power of **Nix flakes** in creating truly cross-platform development environments.
 By examining the flake, you can appreciate how it handles different operating
 systems while maintaining a consistent core setup.
